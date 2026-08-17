@@ -1,0 +1,100 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Apartment360 Use Case Diagram" id="Apartment360-UseCase">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- System Boundary -->
+        <mxCell id="sys_boundary" value="Apartment360 System Boundary" style="shape=swimlane;whiteSpace=wrap;html=1;startSize=30;horizontal=1;fillColor=#f8f9fa;strokeColor=#6c757d;fontStyle=1;fontSize=14;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="200" y="40" width="440" height="630" as="geometry" />
+        </mxCell>
+        
+        <!-- Actors -->
+        <mxCell id="actor_tenant" value="Tenant" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="80" y="310" width="45" height="90" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="actor_admin" value="Property Manager / Admin" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=12;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="700" y="310" width="45" height="90" as="geometry" />
+        </mxCell>
+
+        <!-- Use Cases inside System Boundary -->
+        <mxCell id="uc1" value="UC-01: Authenticate User" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="330" y="90" width="180" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc2" value="UC-02: Manage Apartment Units" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="430" y="160" width="180" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc3" value="UC-03: Assign Tenant to Unit" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="430" y="240" width="180" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc4" value="UC-04: Submit Maintenance Ticket" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="230" y="320" width="180" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc5" value="UC-05: Update Ticket Status" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="430" y="400" width="180" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc6" value="UC-06: View Rent Dues &amp; History" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="230" y="480" width="180" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc7" value="UC-07: Record Rent Payment" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="430" y="540" width="180" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="uc8" value="UC-08: View Dashboard Analytics" style="ellipse;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="430" y="600" width="180" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Associations for Tenant -->
+        <mxCell id="edge_t1" style="endArrow=none;html=1;rounded=0;strokeWidth=1.5;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="actor_tenant" target="uc1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_t4" style="endArrow=none;html=1;rounded=0;strokeWidth=1.5;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="actor_tenant" target="uc4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_t6" style="endArrow=none;html=1;rounded=0;strokeWidth=1.5;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="actor_tenant" target="uc6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Associations for Admin -->
+        <mxCell id="edge_a1" style="endArrow=none;html=1;rounded=0;strokeWidth=1.5;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="actor_admin" target="uc1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_a2" style="endArrow=none;html=1;rounded=0;strokeWidth=1.5;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="actor_admin" target="uc2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_a3" style="endArrow=none;html=1;rounded=0;strokeWidth=1.5;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="actor_admin" target="uc3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_a5" style="endArrow=none;html=1;rounded=0;strokeWidth=1.5;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="actor_admin" target="uc5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_a7" style="endArrow=none;html=1;rounded=0;strokeWidth=1.5;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="actor_admin" target="uc7">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_a8" style="endArrow=none;html=1;rounded=0;strokeWidth=1.5;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="actor_admin" target="uc8">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Stereotype relationships -->
+        <!-- UC3 includes UC2 -->
+        <mxCell id="edge_inc" value="&amp;lt;&amp;lt;includes&amp;gt;&amp;gt;" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;strokeWidth=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="uc3" target="uc2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- UC5 extends UC4 -->
+        <mxCell id="edge_ext" value="&amp;lt;&amp;lt;extends&amp;gt;&amp;gt;" style="endArrow=open;endSize=12;dashed=1;html=1;rounded=0;strokeWidth=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="uc5" target="uc4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

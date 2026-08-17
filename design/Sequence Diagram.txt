@@ -1,0 +1,151 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Apartment360 Sequence Diagram" id="Apartment360-Sequence">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="950" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Lifelines (Headers) -->
+        <mxCell id="ll_tenant" value="&lt;b&gt;Tenant&lt;/b&gt;&lt;br&gt;(Actor)" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#dae8fc;strokeColor=#6c8ebf;size=40;" vertex="1" parent="1">
+          <mxGeometry x="60" y="40" width="100" height="780" as="geometry" />
+        </mxCell>
+        
+        <mxCell id="ll_ui" value="&lt;b&gt;React UI&lt;/b&gt;&lt;br&gt;(Client View)" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#d5e8d4;strokeColor=#82b366;size=40;" vertex="1" parent="1">
+          <mxGeometry x="240" y="40" width="110" height="780" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ll_auth" value="&lt;b&gt;AuthMiddleware&lt;/b&gt;&lt;br&gt;(JWT Handler)" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#ffe6cc;strokeColor=#d79b00;size=40;" vertex="1" parent="1">
+          <mxGeometry x="430" y="40" width="120" height="780" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ll_ctrl" value="&lt;b&gt;TicketController&lt;/b&gt;&lt;br&gt;(Express API)" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#ffe6cc;strokeColor=#d79b00;size=40;" vertex="1" parent="1">
+          <mxGeometry x="630" y="40" width="120" height="780" as="geometry" />
+        </mxCell>
+
+        <mxCell id="ll_db" value="&lt;b&gt;MongoDB&lt;/b&gt;&lt;br&gt;(Database)" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;collapsible=0;recursiveResize=0;outlineConnect=0;fillColor=#e1d5e7;strokeColor=#9673a6;size=40;" vertex="1" parent="1">
+          <mxGeometry x="830" y="40" width="100" height="780" as="geometry" />
+        </mxCell>
+
+        <!-- Activation Boxes -->
+        <mxCell id="act_ui" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;fillColor=#ffffff;strokeColor=#82b366;" vertex="1" parent="ll_ui">
+          <mxGeometry x="50" y="70" width="10" height="650" as="geometry" />
+        </mxCell>
+
+        <mxCell id="act_auth" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;fillColor=#ffffff;strokeColor=#d79b00;" vertex="1" parent="ll_auth">
+          <mxGeometry x="55" y="160" width="10" height="120" as="geometry" />
+        </mxCell>
+
+        <mxCell id="act_ctrl" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;fillColor=#ffffff;strokeColor=#d79b00;" vertex="1" parent="ll_ctrl">
+          <mxGeometry x="55" y="380" width="10" height="230" as="geometry" />
+        </mxCell>
+
+        <mxCell id="act_db" value="" style="html=1;points=[];perimeter=orthogonalPerimeter;fillColor=#ffffff;strokeColor=#9673a6;" vertex="1" parent="ll_db">
+          <mxGeometry x="45" y="430" width="10" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- Messages -->
+        <!-- 1. Form submit -->
+        <mxCell id="msg1" value="1: Fill form &amp; click &quot;Submit&quot;" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;strokeWidth=1.5;" edge="1" parent="1" source="ll_tenant" target="act_ui">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint y="110" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 2. Local Validation -->
+        <mxCell id="msg2" value="2: Validate fields locally" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;edgeStyle=orthogonalEdgeStyle;strokeWidth=1.2;" edge="1" parent="1" source="act_ui" target="act_ui">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="320" y="140" />
+              <mxPoint x="320" y="165" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 3. POST /api/tickets -->
+        <mxCell id="msg3" value="3: POST /api/tickets [Bearer JWT, Body]" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;strokeWidth=1.5;" edge="1" parent="1" source="act_ui" target="act_auth">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint y="200" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 4. Verify JWT -->
+        <mxCell id="msg4" value="4: Verify JWT signature &amp; expiry" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;edgeStyle=orthogonalEdgeStyle;strokeWidth=1.2;" edge="1" parent="1" source="act_auth" target="act_auth">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="510" y="225" />
+              <mxPoint x="510" y="250" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Alt Frame for Token Validation -->
+        <mxCell id="alt_frame" value="[alt: Token Valid / Expired]" style="shape=umlFrame;whiteSpace=wrap;html=1;width=160;height=25;fillColor=none;strokeColor=#4A4A4A;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="180" y="280" width="770" height="420" as="geometry" />
+        </mxCell>
+
+        <!-- Alt Separator -->
+        <mxCell id="alt_sep" value="[else: Token Valid]" style="line;strokeWidth=1;dashed=1;labelPosition=right;verticalLabelPosition=top;align=left;verticalAlign=bottom;strokeColor=#4A4A4A;html=1;" vertex="1" parent="alt_frame">
+          <mxGeometry y="90" width="770" height="10" as="geometry" />
+        </mxCell>
+
+        <!-- 5. 401 Unauthorized -->
+        <mxCell id="msg5" value="5: 401 Unauthorized (Invalid Token)" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;strokeColor=#b85450;" edge="1" parent="1" source="act_auth" target="act_ui">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint y="320" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="msg5b" value="6: Redirect to Login" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;strokeColor=#b85450;" edge="1" parent="1" source="act_ui" target="ll_tenant">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint y="345" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 7. Forward Request -->
+        <mxCell id="msg7" value="7: forwardRequest(req.user)" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;strokeWidth=1.5;" edge="1" parent="1" source="ll_auth" target="act_ctrl">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint y="420" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 8. DB Create -->
+        <mxCell id="msg8" value="8: Ticket.create(payload, status: &quot;Pending&quot;)" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;strokeWidth=1.5;" edge="1" parent="1" source="act_ctrl" target="act_db">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint y="470" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 9. DB Return Document -->
+        <mxCell id="msg9" value="9: Return saved document (_id)" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;" edge="1" parent="1" source="act_db" target="act_ctrl">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint y="540" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 10. HTTP 201 Created -->
+        <mxCell id="msg10" value="10: 201 Created {success: true, ticket}" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;strokeColor=#82b366;" edge="1" parent="1" source="act_ctrl" target="act_ui">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint y="600" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+        <!-- 11. State update and success toast -->
+        <mxCell id="msg11" value="11: Update state &amp; reset form" style="html=1;verticalAlign=bottom;endArrow=block;rounded=0;edgeStyle=orthogonalEdgeStyle;strokeWidth=1.2;" edge="1" parent="1" source="act_ui" target="act_ui">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="320" y="630" />
+              <mxPoint x="320" y="655" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="msg12" value="12: Display Success Toast Notification" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;rounded=0;strokeColor=#82b366;" edge="1" parent="1" source="act_ui" target="ll_tenant">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint y="690" as="offset" />
+          </mxGeometry>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

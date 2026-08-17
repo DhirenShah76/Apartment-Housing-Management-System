@@ -1,0 +1,180 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Apartment360 Activity Diagram" id="Apartment360-Activity">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="1050" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Swimlane: Tenant -->
+        <mxCell id="lane_tenant" value="Tenant (Resident)" style="swimlane;whiteSpace=wrap;html=1;startSize=30;horizontal=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=13;fontStyle=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="280" height="950" as="geometry" />
+        </mxCell>
+
+        <!-- Start Node -->
+        <mxCell id="node_start" value="" style="ellipse;fillColor=#000000;strokeColor=#000000;" vertex="1" parent="lane_tenant">
+          <mxGeometry x="125" y="50" width="30" height="30" as="geometry" />
+        </mxCell>
+
+        <mxCell id="node_t1" value="Log into Tenant Dashboard" style="rounded=1;whiteSpace=wrap;html=1;arcSize=20;fillColor=#ffffff;strokeColor=#333333;fontSize=11;" vertex="1" parent="lane_tenant">
+          <mxGeometry x="65" y="110" width="150" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="node_t2" value="Navigate to 'New Ticket' Screen" style="rounded=1;whiteSpace=wrap;html=1;arcSize=20;fillColor=#ffffff;strokeColor=#333333;fontSize=11;" vertex="1" parent="lane_tenant">
+          <mxGeometry x="65" y="180" width="150" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="node_t3" value="Fill Title, Category,&#xa;Priority &amp; Description" style="rounded=1;whiteSpace=wrap;html=1;arcSize=20;fillColor=#ffffff;strokeColor=#333333;fontSize=11;" vertex="1" parent="lane_tenant">
+          <mxGeometry x="65" y="250" width="150" height="45" as="geometry" />
+        </mxCell>
+
+        <mxCell id="node_t4" value="Click 'Submit Ticket'" style="rounded=1;whiteSpace=wrap;html=1;arcSize=20;fillColor=#ffffff;strokeColor=#333333;fontSize=11;" vertex="1" parent="lane_tenant">
+          <mxGeometry x="65" y="325" width="150" height="35" as="geometry" />
+        </mxCell>
+
+        <mxCell id="node_err" value="Display Validation Errors" style="rounded=1;whiteSpace=wrap;html=1;arcSize=20;fillColor=#f8cecc;strokeColor=#b85450;fontSize=11;" vertex="1" parent="lane_tenant">
+          <mxGeometry x="65" y="390" width="150" height="35" as="geometry" />
+        </mxCell>
+
+        <mxCell id="node_t5" value="View Confirmation Banner&#xa;&amp; Generated Ticket ID" style="rounded=1;whiteSpace=wrap;html=1;arcSize=20;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="lane_tenant">
+          <mxGeometry x="65" y="580" width="150" height="45" as="geometry" />
+        </mxCell>
+
+        <mxCell id="node_t6" value="View 'Resolved' Status &amp;&#xa;Inspection Summary" style="rounded=1;whiteSpace=wrap;html=1;arcSize=20;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=11;" vertex="1" parent="lane_tenant">
+          <mxGeometry x="65" y="810" width="150" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- Final End Node -->
+        <mxCell id="node_end" value="" style="shape=ellipse;fillColor=#000000;strokeColor=#000000;strokeWidth=2;perimeter=ellipsePerimeter;html=1;" vertex="1" parent="lane_tenant">
+          <mxGeometry x="125" y="890" width="30" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="node_end_ring" value="" style="ellipse;shape=doubleEllipse;fillColor=none;strokeColor=#000000;strokeWidth=1.5;" vertex="1" parent="lane_tenant">
+          <mxGeometry x="122" y="887" width="36" height="36" as="geometry" />
+        </mxCell>
+
+        <!-- Swimlane: System -->
+        <mxCell id="lane_system" value="Apartment360 Backend / API" style="swimlane;whiteSpace=wrap;html=1;startSize=30;horizontal=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=13;fontStyle=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="320" y="40" width="280" height="950" as="geometry" />
+        </mxCell>
+
+        <mxCell id="dec_valid" value="Valid&#xa;Input?" style="rhombus;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#333333;fontSize=11;" vertex="1" parent="lane_system">
+          <mxGeometry x="90" y="315" width="100" height="55" as="geometry" />
+        </mxCell>
+
+        <mxCell id="node_s1" value="Verify JWT &amp; Extract&#xa;Tenant/Unit ID" style="rounded=1;whiteSpace=wrap;html=1;arcSize=20;fillColor=#ffffff;strokeColor=#333333;fontSize=11;" vertex="1" parent="lane_system">
+          <mxGeometry x="65" y="410" width="150" height="40" as="geometry" />
+        </mxCell>
+
+        <mxCell id="node_s2" value="Save Record in MongoDB:&#xa;status = 'Pending'" style="rounded=1;whiteSpace=wrap;html=1;arcSize=20;fillColor=#ffffff;strokeColor=#333333;fontSize=11;" vertex="1" parent="lane_system">
+          <mxGeometry x="65" y="490" width="150" height="45" as="geometry" />
+        </mxCell>
+
+        <mxCell id="node_s3" value="Update MongoDB Record:&#xa;status = 'In Progress'" style="rounded=1;whiteSpace=wrap;html=1;arcSize=20;fillColor=#ffffff;strokeColor=#333333;fontSize=11;" vertex="1" parent="lane_system">
+          <mxGeometry x="65" y="660" width="150" height="45" as="geometry" />
+        </mxCell>
+
+        <mxCell id="node_s4" value="Update MongoDB Record:&#xa;status = 'Resolved' + completedAt" style="rounded=1;whiteSpace=wrap;html=1;arcSize=20;fillColor=#ffffff;strokeColor=#333333;fontSize=11;" vertex="1" parent="lane_system">
+          <mxGeometry x="65" y="810" width="150" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- Swimlane: Admin -->
+        <mxCell id="lane_admin" value="Property Manager / Admin" style="swimlane;whiteSpace=wrap;html=1;startSize=30;horizontal=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=13;fontStyle=1;collapsible=0;" vertex="1" parent="1">
+          <mxGeometry x="600" y="40" width="280" height="950" as="geometry" />
+        </mxCell>
+
+        <mxCell id="node_a1" value="Review Pending Tickets&#xa;in Dashboard Queue" style="rounded=1;whiteSpace=wrap;html=1;arcSize=20;fillColor=#ffffff;strokeColor=#333333;fontSize=11;" vertex="1" parent="lane_admin">
+          <mxGeometry x="65" y="490" width="150" height="45" as="geometry" />
+        </mxCell>
+
+        <mxCell id="node_a2" value="Assign Contractor &amp;&#xa;Set Status to In Progress" style="rounded=1;whiteSpace=wrap;html=1;arcSize=20;fillColor=#ffffff;strokeColor=#333333;fontSize=11;" vertex="1" parent="lane_admin">
+          <mxGeometry x="65" y="580" width="150" height="45" as="geometry" />
+        </mxCell>
+
+        <mxCell id="node_a3" value="Contractor Executes&#xa;Repair Work" style="rounded=1;whiteSpace=wrap;html=1;arcSize=20;fillColor=#ffffff;strokeColor=#333333;fontSize=11;" vertex="1" parent="lane_admin">
+          <mxGeometry x="65" y="660" width="150" height="45" as="geometry" />
+        </mxCell>
+
+        <mxCell id="node_a4" value="Mark Ticket as 'Resolved'&#xa;in Admin Dashboard" style="rounded=1;whiteSpace=wrap;html=1;arcSize=20;fillColor=#ffffff;strokeColor=#333333;fontSize=11;" vertex="1" parent="lane_admin">
+          <mxGeometry x="65" y="740" width="150" height="45" as="geometry" />
+        </mxCell>
+
+        <!-- Connectors -->
+        <mxCell id="e1" style="endArrow=block;html=1;rounded=0;strokeWidth=1.2;" edge="1" parent="1" source="node_start" target="node_t1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e2" style="endArrow=block;html=1;rounded=0;strokeWidth=1.2;" edge="1" parent="1" source="node_t1" target="node_t2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e3" style="endArrow=block;html=1;rounded=0;strokeWidth=1.2;" edge="1" parent="1" source="node_t2" target="node_t3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e4" style="endArrow=block;html=1;rounded=0;strokeWidth=1.2;" edge="1" parent="1" source="node_t3" target="node_t4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e5" style="endArrow=block;html=1;rounded=0;strokeWidth=1.2;" edge="1" parent="1" source="node_t4" target="dec_valid">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e_no" value="[No]" style="endArrow=block;html=1;rounded=0;strokeWidth=1.2;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="dec_valid" target="node_err">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e_err_back" style="endArrow=block;html=1;rounded=0;strokeWidth=1.2;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="node_err" target="node_t3">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="180" y="370" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <mxCell id="e_yes" value="[Yes]" style="endArrow=block;html=1;rounded=0;strokeWidth=1.2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="dec_valid" target="node_s1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e7" style="endArrow=block;html=1;rounded=0;strokeWidth=1.2;" edge="1" parent="1" source="node_s1" target="node_s2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e8" style="endArrow=block;html=1;rounded=0;strokeWidth=1.2;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="node_s2" target="node_t5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e9" style="endArrow=block;html=1;rounded=0;strokeWidth=1.2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="node_s2" target="node_a1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e10" style="endArrow=block;html=1;rounded=0;strokeWidth=1.2;" edge="1" parent="1" source="node_a1" target="node_a2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e11" style="endArrow=block;html=1;rounded=0;strokeWidth=1.2;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="node_a2" target="node_s3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e12" style="endArrow=block;html=1;rounded=0;strokeWidth=1.2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="node_s3" target="node_a3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e13" style="endArrow=block;html=1;rounded=0;strokeWidth=1.2;" edge="1" parent="1" source="node_a3" target="node_a4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e14" style="endArrow=block;html=1;rounded=0;strokeWidth=1.2;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="node_a4" target="node_s4">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e15" style="endArrow=block;html=1;rounded=0;strokeWidth=1.2;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="node_s4" target="node_t6">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="e16" style="endArrow=block;html=1;rounded=0;strokeWidth=1.2;" edge="1" parent="1" source="node_t6" target="node_end">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,76 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="Apartment360 Class Diagram" id="Apartment360-Class">
+    <mxGraphModel dx="1200" dy="800" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1100" pageHeight="850" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- User Base Class -->
+        <mxCell id="class_user" value="&lt;b&gt;User&lt;/b&gt;&lt;hr&gt;+ userId : ObjectId&lt;br&gt;+ name : String&lt;br&gt;+ email : String&lt;br&gt;+ passwordHash : String&lt;br&gt;+ role : String&lt;br&gt;+ createdAt : Date&lt;hr&gt;+ register() : Boolean&lt;br&gt;+ login() : String" style="swipeable=0;html=1;fillColor=#ffffff;strokeColor=#333333;verticalAlign=top;align=left;spacingLeft=5;fontSize=12;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="450" y="40" width="180" height="180" as="geometry" />
+        </mxCell>
+
+        <!-- Tenant Subclass -->
+        <mxCell id="class_tenant" value="&lt;b&gt;Tenant&lt;/b&gt;&lt;hr&gt;+ phone : String&lt;br&gt;+ unitId : ObjectId&lt;hr&gt;+ submitTicket() : Ticket&lt;br&gt;+ viewDues() : Payment" style="swipeable=0;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;verticalAlign=top;align=left;spacingLeft=5;fontSize=12;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="250" y="280" width="180" height="110" as="geometry" />
+        </mxCell>
+
+        <!-- Admin Subclass -->
+        <mxCell id="class_admin" value="&lt;b&gt;Admin&lt;/b&gt;&lt;hr&gt;+ adminLevel : String&lt;hr&gt;+ createUnit() : Unit&lt;br&gt;+ assignTenant() : Boolean&lt;br&gt;+ updateTicket() : Ticket&lt;br&gt;+ recordPayment() : Payment" style="swipeable=0;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;verticalAlign=top;align=left;spacingLeft=5;fontSize=12;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="650" y="280" width="180" height="120" as="geometry" />
+        </mxCell>
+
+        <!-- Unit Class -->
+        <mxCell id="class_unit" value="&lt;b&gt;Unit&lt;/b&gt;&lt;hr&gt;+ unitId : ObjectId&lt;br&gt;+ unitNumber : String&lt;br&gt;+ floor : Number&lt;br&gt;+ rentAmount : Number&lt;br&gt;+ status : String&lt;hr&gt;+ updateStatus() : void&lt;br&gt;+ getOccupant() : User" style="swipeable=0;html=1;fillColor=#ffffff;strokeColor=#333333;verticalAlign=top;align=left;spacingLeft=5;fontSize=12;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="850" y="480" width="180" height="150" as="geometry" />
+        </mxCell>
+
+        <!-- Ticket Class -->
+        <mxCell id="class_ticket" value="&lt;b&gt;Ticket&lt;/b&gt;&lt;hr&gt;+ ticketId : ObjectId&lt;br&gt;+ tenantId : ObjectId&lt;br&gt;+ unitId : ObjectId&lt;br&gt;+ title : String&lt;br&gt;+ description : String&lt;br&gt;+ priority : String&lt;br&gt;+ status : String&lt;br&gt;+ createdAt : Date&lt;hr&gt;+ createTicket() : Boolean&lt;br&gt;+ updateStatus() : void" style="swipeable=0;html=1;fillColor=#ffffff;strokeColor=#333333;verticalAlign=top;align=left;spacingLeft=5;fontSize=12;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="150" y="480" width="180" height="200" as="geometry" />
+        </mxCell>
+
+        <!-- Payment Class -->
+        <mxCell id="class_payment" value="&lt;b&gt;Payment&lt;/b&gt;&lt;hr&gt;+ paymentId : ObjectId&lt;br&gt;+ tenantId : ObjectId&lt;br&gt;+ amount : Number&lt;br&gt;+ paymentDate : Date&lt;br&gt;+ status : String&lt;br&gt;+ method : String&lt;hr&gt;+ processPayment() : Boolean&lt;br&gt;+ generateReceipt() : String" style="swipeable=0;html=1;fillColor=#ffffff;strokeColor=#333333;verticalAlign=top;align=left;spacingLeft=5;fontSize=12;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="500" y="480" width="180" height="170" as="geometry" />
+        </mxCell>
+
+        <!-- Inheritance Lines (Generalization) -->
+        <mxCell id="inh_tenant" style="endArrow=block;endSize=12;endFill=0;html=1;rounded=0;strokeWidth=1.5;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.25;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="class_tenant" target="class_user">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="inh_admin" style="endArrow=block;endSize=12;endFill=0;html=1;rounded=0;strokeWidth=1.5;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.75;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="class_admin" target="class_user">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Associations -->
+        <!-- Tenant to Unit -->
+        <mxCell id="assoc_tenant_unit" value="resides in&#xa;1 --------- 0..1" style="endArrow=none;html=1;rounded=0;strokeWidth=1.5;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" edge="1" parent="1" source="class_tenant" target="class_unit">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Admin to Unit -->
+        <mxCell id="assoc_admin_unit" value="manages&#xa;1 --------- 0..*" style="endArrow=none;html=1;rounded=0;strokeWidth=1.5;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="class_admin" target="class_unit">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Tenant to Ticket -->
+        <mxCell id="assoc_tenant_ticket" value="files&#xa;1 --------- 0..*" style="endArrow=none;html=1;rounded=0;strokeWidth=1.5;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="class_tenant" target="class_ticket">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Tenant to Payment -->
+        <mxCell id="assoc_tenant_payment" value="makes&#xa;1 --------- 0..*" style="endArrow=none;html=1;rounded=0;strokeWidth=1.5;exitX=0.75;exitY=1;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="class_tenant" target="class_payment">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Admin to Payment -->
+        <mxCell id="assoc_admin_payment" value="verifies&#xa;1 --------- 0..*" style="endArrow=none;html=1;rounded=0;strokeWidth=1.5;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=0.75;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="class_admin" target="class_payment">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
