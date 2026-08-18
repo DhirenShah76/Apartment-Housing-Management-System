@@ -78,3 +78,16 @@ const getMe = async (req, res) => {
 };
 
 module.exports = { registerUser, loginUser, getMe };
+
+// @desc    Get all registered tenants (Admin only)
+// @route   GET /api/auth/tenants
+const getTenants = async (req, res) => {
+    try {
+        const tenants = await User.find({ role: 'Tenant' }).select('-password');
+        res.json({ success: true, count: tenants.length, data: tenants });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+module.exports = { registerUser, loginUser, getMe, getTenants };

@@ -6,8 +6,9 @@ const AdminDashboard = () => {
     const { user } = useContext(AuthContext);
     const [units, setUnits] = useState([]);
     const [tickets, setTickets] = useState([]);
+    const [tenants, setTenants] = useState([]);
+    const [selectedTenants, setSelectedTenants] = useState({});
     const [newUnit, setNewUnit] = useState({ unitNumber: '', floor: '', rentAmount: '', bedrooms: 1 });
-    const [assignData, setAssignData] = useState({ unitId: '', tenantEmail: '' });
     const [msg, setMsg] = useState({ type: '', text: '' });
     const [loading, setLoading] = useState(true);
 
@@ -17,12 +18,14 @@ const AdminDashboard = () => {
 
     const loadAdminData = async () => {
         try {
-            const [unitsRes, ticketsRes] = await Promise.all([
+            const [unitsRes, ticketsRes, tenantsRes] = await Promise.all([
                 axios.get('http://localhost:5000/api/units', authHeader),
-                axios.get('http://localhost:5000/api/tickets', authHeader)
+                axios.get('http://localhost:5000/api/tickets', authHeader),
+                axios.get('http://localhost:5000/api/auth/tenants', authHeader)
             ]);
             setUnits(unitsRes.data.data);
             setTickets(ticketsRes.data.data);
+            setTenants(tenantsRes.data.data);
         } catch (err) {
             setMsg({ type: 'error', text: 'Error loading management records.' });
         } finally {
@@ -47,6 +50,36 @@ const AdminDashboard = () => {
         }
     };
 
+    const handleAssignTenant = async (unitId) => {
+        const tenantId = selectedTenants[unitId];
+        if (!tenantId) {
+            setMsg({ type: 'error', text: 'Please select a tenant from the dropdown first.' });
+            return;
+        }
+
+        try {
+            const res = await axios.patch(
+                `http://localhost:5000/api/units/${unitId}/assign`,
+                { tenantId },
+                authHeader
+            );
+            setMsg({ type: 'success', text: res.data.message });
+            loadAdminData(); // Refresh tables
+        } catch (err) {
+            setMsg({ type: 'error', text: err.response?.data?.message || 'Failed to assign tenant.' });
+        }
+    };
+
+    const handleVacateUnit = async (unitId) => {
+        try {
+            const res = await axios.patch(`http://localhost:5000/api/units/${unitId}/unassign`, {}, authHeader);
+            setMsg({ type: 'success', text: 'Unit marked as vacant.' });
+            loadAdminData(); // Refresh tables
+        } catch (err) {
+            setMsg({ type: 'error', text: 'Failed to vacate unit.' });
+        }
+    };
+
     const handleUpdateTicketStatus = async (ticketId, newStatus) => {
         try {
             await axios.patch(`http://localhost:5000/api/tickets/${ticketId}/status`, { status: newStatus }, authHeader);
@@ -54,16 +87,6 @@ const AdminDashboard = () => {
             setMsg({ type: 'success', text: 'Ticket status updated.' });
         } catch (err) {
             setMsg({ type: 'error', text: 'Failed to update ticket status.' });
-        }
-    };
-
-    const handleVacateUnit = async (unitId) => {
-        try {
-            const res = await axios.patch(`http://localhost:5000/api/units/${unitId}/unassign`, {}, authHeader);
-            setUnits(units.map(u => u._id === unitId ? res.data.data : u));
-            setMsg({ type: 'success', text: 'Unit marked as vacant.' });
-        } catch (err) {
-            setMsg({ type: 'error', text: 'Failed to vacate unit.' });
         }
     };
 
@@ -163,17 +186,17 @@ const AdminDashboard = () => {
                                 <thead>
                                     <tr>
                                         <th>Unit</th>
-                                        <th>Floor</th>
                                         <th>Rent</th>
                                         <th>Status</th>
-                                        <th>Action</th>
+                                        <th>Occupant / Assignment</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {units.map((u) => (
                                         <tr key={u._id}>
-                                            <td><strong>{u.unitNumber}</strong></td>
-                                            <td>{u.floor}</td>
+                                            <td>
+                                                <strong>{u.unitNumber}</strong> (Fl {u.floor})
+                                            </td>
                                             <td>${u.rentAmount}</td>
                                             <td>
                                                 <span className={`badge ${u.status === 'Occupied' ? 'badge-occupied' : 'badge-vacant'}`}>
@@ -181,13 +204,37 @@ const AdminDashboard = () => {
                                                 </span>
                                             </td>
                                             <td>
-                                                {u.status === 'Occupied' && (
-                                                    <button
-                                                        onClick={() => handleVacateUnit(u._id)}
-                                                        style={{ background: '#e53e3e', color: 'white', border: 'none', padding: '0.25rem 0.5rem', borderRadius: '4px', cursor: 'pointer' }}
-                                                    >
-                                                        Vacate
-                                                    </button>
+                                                {u.status === 'Occupied' ? (
+                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                                        <span>{u.currentTenant?.name || 'Assigned Tenant'}</span>
+                                                        <button
+                                                            onClick={() => handleVacateUnit(u._id)}
+                                                            style={{ background: '#e53e3e', color: 'white', border: 'none', padding: '0.25rem 0.5rem', borderRadius: '4px', cursor: 'pointer', fontSize: '0.75rem' }}
+                                                        >
+                                                            Vacate
+                                                        </button>
+                                                    </div>
+                                                ) : (
+                                                    <div style={{ display: 'flex', gap: '0.3rem', alignItems: 'center' }}>
+                                                        <select
+                                                            value={selectedTenants[u._id] || ''}
+                                                            onChange={(e) => setSelectedTenants({ ...selectedTenants, [u._id]: e.target.value })}
+                                                            style={{ padding: '0.25rem', fontSize: '0.8rem', maxWidth: '140px' }}
+                                                        >
+                                                            <option value="">Select Tenant</option>
+                                                            {tenants.map((t) => (
+                                                                <option key={t._id} value={t._id}>
+                                                                    {t.name}
+                                                                </option>
+                                                            ))}
+                                                        </select>
+                                                        <button
+                                                            onClick={() => handleAssignTenant(u._id)}
+                                                            style={{ background: '#2b6cb0', color: 'white', border: 'none', padding: '0.25rem 0.5rem', borderRadius: '4px', cursor: 'pointer', fontSize: '0.75rem' }}
+                                                        >
+                                                            Assign
+                                                        </button>
+                                                    </div>
                                                 )}
                                             </td>
                                         </tr>
