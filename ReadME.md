@@ -51,7 +51,7 @@ Managing multi-unit residential properties through spreadsheets and paper logs l
 ## Repository Structure
 
 ```text
-apartment360-system/
+Apartment Housing Management System/
 ├── requirements/               # Software Engineering Specifications
 │   ├── SRS_Document.md         # Functional & Non-Functional Requirements
 │   └── Stakeholder_Analysis.md # Stakeholder Matrix & Elicitation Notes
@@ -82,7 +82,12 @@ apartment360-system/
     └── server.js               # Application entry point
 
 
-##Getting Started
+---
+
+
+## Getting Started
+
+
 Prerequisites
 Node.js (v18.x or higher)
 
