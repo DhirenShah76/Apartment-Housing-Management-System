@@ -1,19 +1,23 @@
 const Ticket = require('../models/Ticket');
-const User = require('../models/User');
+const Unit = require('../models/Unit');
 
-// @desc    Get tickets (Tenants view their own; Admins view all)
+// @desc    Get tickets (filtered by Admin's units or Tenant's own tickets)
 // @route   GET /api/tickets
 const getTickets = async (req, res) => {
     try {
-        let query = {};
-        if (req.user.role === 'Tenant') {
-            query.tenant = req.user._id;
+        let tickets;
+        if (req.user.role === 'Admin') {
+            const adminUnits = await Unit.find({ admin: req.user._id }).select('_id');
+            const unitIds = adminUnits.map(u => u._id);
+            tickets = await Ticket.find({ unit: { $in: unitIds } })
+                .populate('tenant', 'name email')
+                .populate('unit', 'unitNumber floor')
+                .sort({ createdAt: -1 });
+        } else {
+            tickets = await Ticket.find({ tenant: req.user._id })
+                .populate('unit', 'unitNumber floor')
+                .sort({ createdAt: -1 });
         }
-
-        const tickets = await Ticket.find(query)
-            .populate('tenant', 'name email phone')
-            .populate('unit', 'unitNumber floor')
-            .sort({ createdAt: -1 });
 
         res.json({ success: true, count: tickets.length, data: tickets });
     } catch (error) {
@@ -21,21 +25,25 @@ const getTickets = async (req, res) => {
     }
 };
 
-// @desc    Submit a new maintenance ticket
+// @desc    Create ticket (Tenant)
 // @route   POST /api/tickets
 const createTicket = async (req, res) => {
     try {
-        const { title, description, category, priority } = req.body;
+        const { title, description, category, priority, unitId } = req.body;
 
-        const user = await User.findById(req.user._id);
+        let targetUnitId = unitId;
+        if (!targetUnitId) {
+            const tenantUnit = await Unit.findOne({ currentTenant: req.user._id });
+            targetUnitId = tenantUnit?._id;
+        }
 
         const ticket = await Ticket.create({
+            tenant: req.user._id,
+            unit: targetUnitId,
             title,
             description,
-            category: category || 'General',
-            priority: priority || 'Medium',
-            tenant: req.user._id,
-            unit: user.unitId || null
+            category,
+            priority
         });
 
         res.status(201).json({ success: true, data: ticket });
@@ -44,23 +52,21 @@ const createTicket = async (req, res) => {
     }
 };
 
-// @desc    Update ticket status (Admin only)
+// @desc    Update ticket status (Admin)
 // @route   PATCH /api/tickets/:id/status
 const updateTicketStatus = async (req, res) => {
     try {
-        const { status, adminNotes } = req.body;
-
+        const { status } = req.body;
         const ticket = await Ticket.findById(req.params.id);
+
         if (!ticket) {
             return res.status(404).json({ success: false, message: 'Ticket not found' });
         }
 
-        if (status) ticket.status = status;
-        if (adminNotes !== undefined) ticket.adminNotes = adminNotes;
-
+        ticket.status = status;
         await ticket.save();
 
-        res.json({ success: true, message: 'Ticket status updated', data: ticket });
+        res.json({ success: true, data: ticket });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }

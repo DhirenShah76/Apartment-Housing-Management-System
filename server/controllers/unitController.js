@@ -1,34 +1,35 @@
 const Unit = require('../models/Unit');
 const User = require('../models/User');
 
-// @desc    Get all units
+// @desc    Get units managed by the logged-in admin
 // @route   GET /api/units
 const getUnits = async (req, res) => {
     try {
-        const units = await Unit.find().populate('currentTenant', 'name email phone');
+        const filter = req.user.role === 'Admin' ? { admin: req.user._id } : {};
+        const units = await Unit.find(filter).populate('currentTenant', 'name email phone');
         res.json({ success: true, count: units.length, data: units });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
 };
 
-// @desc    Create a new unit
+// @desc    Create a unit belonging to the logged-in admin
 // @route   POST /api/units
 const createUnit = async (req, res) => {
     try {
         const { unitNumber, floor, bedrooms, rentAmount } = req.body;
 
-        const existingUnit = await Unit.findOne({ unitNumber });
+        const existingUnit = await Unit.findOne({ unitNumber, admin: req.user._id });
         if (existingUnit) {
-            return res.status(400).json({ success: false, message: `Unit ${unitNumber} already exists` });
+            return res.status(400).json({ success: false, message: `Unit ${unitNumber} already exists in your directory` });
         }
 
         const unit = await Unit.create({
             unitNumber,
             floor,
-            bedrooms: bedrooms || 1,
+            bedrooms,
             rentAmount,
-            status: 'Vacant'
+            admin: req.user._id
         });
 
         res.status(201).json({ success: true, data: unit });
@@ -37,59 +38,47 @@ const createUnit = async (req, res) => {
     }
 };
 
-// @desc    Assign a tenant to an apartment unit
+// @desc    Assign tenant to unit
 // @route   PATCH /api/units/:id/assign
 const assignTenant = async (req, res) => {
     try {
         const { tenantId } = req.body;
-        const unitId = req.params.id;
+        const unit = await Unit.findOne({ _id: req.params.id, admin: req.user._id });
 
-        const unit = await Unit.findById(unitId);
         if (!unit) {
-            return res.status(404).json({ success: false, message: 'Unit not found' });
+            return res.status(404).json({ success: false, message: 'Unit not found or unauthorized' });
         }
 
         const tenant = await User.findById(tenantId);
         if (!tenant || tenant.role !== 'Tenant') {
-            return res.status(400).json({ success: false, message: 'Invalid tenant user ID' });
+            return res.status(400).json({ success: false, message: 'Invalid tenant selected' });
         }
 
-        // Update unit and tenant documents
         unit.currentTenant = tenant._id;
         unit.status = 'Occupied';
         await unit.save();
 
-        tenant.unitId = unit._id;
-        await tenant.save();
-
-        res.json({
-            success: true,
-            message: `Tenant ${tenant.name} assigned to Unit ${unit.unitNumber}`,
-            data: unit
-        });
+        res.json({ success: true, message: `Tenant assigned to Unit ${unit.unitNumber}`, data: unit });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
 };
 
-// @desc    Unassign / Vacate a unit
+// @desc    Vacate / Unassign unit
 // @route   PATCH /api/units/:id/unassign
 const unassignTenant = async (req, res) => {
     try {
-        const unit = await Unit.findById(req.params.id);
-        if (!unit) {
-            return res.status(404).json({ success: false, message: 'Unit not found' });
-        }
+        const unit = await Unit.findOne({ _id: req.params.id, admin: req.user._id });
 
-        if (unit.currentTenant) {
-            await User.findByIdAndUpdate(unit.currentTenant, { unitId: null });
+        if (!unit) {
+            return res.status(404).json({ success: false, message: 'Unit not found or unauthorized' });
         }
 
         unit.currentTenant = null;
         unit.status = 'Vacant';
         await unit.save();
 
-        res.json({ success: true, message: `Unit ${unit.unitNumber} marked as Vacant`, data: unit });
+        res.json({ success: true, message: `Unit ${unit.unitNumber} is now vacant`, data: unit });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }

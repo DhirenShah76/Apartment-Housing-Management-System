@@ -5,13 +5,15 @@ import { AuthContext } from '../context/AuthContext';
 const TenantDashboard = () => {
     const { user } = useContext(AuthContext);
     const [profile, setProfile] = useState(null);
+    const [assignedUnits, setAssignedUnits] = useState([]);
     const [tickets, setTickets] = useState([]);
     const [payments, setPayments] = useState([]);
     const [formData, setFormData] = useState({
         title: '',
         category: 'General',
         priority: 'Medium',
-        description: ''
+        description: '',
+        unitId: ''
     });
     const [msg, setMsg] = useState({ type: '', text: '' });
     const [loading, setLoading] = useState(true);
@@ -29,6 +31,11 @@ const TenantDashboard = () => {
             ]);
 
             setProfile(profileRes.data.data);
+            const units = profileRes.data.data.assignedUnits || [];
+            setAssignedUnits(units);
+            if (units.length > 0) {
+                setFormData(prev => ({ ...prev, unitId: units[0]._id }));
+            }
             setTickets(ticketsRes.data.data);
             setPayments(paymentsRes.data.data);
         } catch (err) {
@@ -49,7 +56,13 @@ const TenantDashboard = () => {
         try {
             const res = await axios.post('http://localhost:5000/api/tickets', formData, authHeader);
             setTickets([res.data.data, ...tickets]);
-            setFormData({ title: '', category: 'General', priority: 'Medium', description: '' });
+            setFormData({
+                title: '',
+                category: 'General',
+                priority: 'Medium',
+                description: '',
+                unitId: assignedUnits[0]?._id || ''
+            });
             setMsg({ type: 'success', text: 'Maintenance ticket submitted successfully!' });
         } catch (err) {
             setMsg({ type: 'error', text: err.response?.data?.message || 'Failed to submit ticket.' });
@@ -57,6 +70,9 @@ const TenantDashboard = () => {
     };
 
     if (loading) return <div className="container"><p>Loading portal data...</p></div>;
+
+    // Calculate Combined Rent
+    const totalCombinedRent = assignedUnits.reduce((acc, u) => acc + (u.rentAmount || 0), 0);
 
     return (
         <div className="container">
@@ -69,19 +85,44 @@ const TenantDashboard = () => {
                 </div>
             )}
 
-            {/* Unit Overview Card */}
+            {/* Multi-Unit Overview Section */}
             <div className="card" style={{ marginTop: '1.5rem' }}>
                 <h3>Apartment Information</h3>
-                {profile?.unitId ? (
-                    <div style={{ display: 'flex', gap: '2rem', marginTop: '0.5rem' }}>
-                        <p><strong>Unit:</strong> {profile.unitId.unitNumber}</p>
-                        <p><strong>Floor:</strong> {profile.unitId.floor}</p>
-                        <p><strong>Monthly Rent:</strong> ${profile.unitId.rentAmount}</p>
-                        <p><strong>Status:</strong> <span className="badge badge-occupied">Assigned</span></p>
+                {assignedUnits.length > 0 ? (
+                    <div>
+                        <div style={{ display: 'flex', gap: '2rem', background: '#edf2f7', padding: '1rem', borderRadius: '6px', margin: '1rem 0' }}>
+                            <div><strong>Total Assigned Units:</strong> {assignedUnits.length}</div>
+                            <div><strong>Total Combined Monthly Rent:</strong> ${totalCombinedRent}</div>
+                        </div>
+
+                        <div className="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Unit Number</th>
+                                        <th>Floor</th>
+                                        <th>Bedrooms</th>
+                                        <th>Individual Rent</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {assignedUnits.map((unit) => (
+                                        <tr key={unit._id}>
+                                            <td><strong>{unit.unitNumber}</strong></td>
+                                            <td>Floor {unit.floor}</td>
+                                            <td>{unit.bedrooms} BHK</td>
+                                            <td>${unit.rentAmount}</td>
+                                            <td><span className="badge badge-occupied">Assigned</span></td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 ) : (
                     <p style={{ color: '#e53e3e', marginTop: '0.5rem' }}>
-                        No apartment unit currently assigned to your account. Contact Property Management.
+                        No apartment units currently assigned to your account. Contact Property Management.
                     </p>
                 )}
             </div>
@@ -91,13 +132,27 @@ const TenantDashboard = () => {
                 <div className="card">
                     <h3>Submit Maintenance Request</h3>
                     <form onSubmit={handleTicketSubmit} style={{ marginTop: '1rem' }}>
+                        {assignedUnits.length > 1 && (
+                            <div className="form-group">
+                                <label>Select Unit</label>
+                                <select
+                                    value={formData.unitId}
+                                    onChange={(e) => setFormData({ ...formData, unitId: e.target.value })}
+                                    required
+                                >
+                                    {assignedUnits.map(u => (
+                                        <option key={u._id} value={u._id}>Unit {u.unitNumber} (Floor {u.floor})</option>
+                                    ))}
+                                </select>
+                            </div>
+                        )}
                         <div className="form-group">
                             <label>Issue Title</label>
                             <input
                                 type="text"
                                 value={formData.title}
                                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-                                placeholder="e.g. Leaking bathroom sink"
+                                placeholder="e.g. Leaking kitchen tap"
                                 required
                             />
                         </div>
@@ -149,9 +204,9 @@ const TenantDashboard = () => {
                                 <thead>
                                     <tr>
                                         <th>Issue</th>
+                                        <th>Unit</th>
                                         <th>Priority</th>
                                         <th>Status</th>
-                                        <th>Date</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -162,6 +217,7 @@ const TenantDashboard = () => {
                                                 <br />
                                                 <small style={{ color: '#718096' }}>{t.category}</small>
                                             </td>
+                                            <td>{t.unit ? `Unit ${t.unit.unitNumber}` : 'General'}</td>
                                             <td>{t.priority}</td>
                                             <td>
                                                 <span className={`badge ${t.status === 'Resolved' ? 'badge-resolved' :
@@ -170,7 +226,6 @@ const TenantDashboard = () => {
                                                     {t.status}
                                                 </span>
                                             </td>
-                                            <td>{new Date(t.createdAt).toLocaleDateString()}</td>
                                         </tr>
                                     ))}
                                 </tbody>
@@ -190,6 +245,7 @@ const TenantDashboard = () => {
                         <table>
                             <thead>
                                 <tr>
+                                    <th>Unit</th>
                                     <th>Amount</th>
                                     <th>Due Date</th>
                                     <th>Payment Date</th>
@@ -200,10 +256,11 @@ const TenantDashboard = () => {
                             <tbody>
                                 {payments.map((p) => (
                                     <tr key={p._id}>
+                                        <td>Unit {p.unit?.unitNumber || '-'}</td>
                                         <td>${p.amount}</td>
                                         <td>{new Date(p.dueDate).toLocaleDateString()}</td>
-                                        <td>{p.paymentDate ? new Date(p.paymentDate).toLocaleDateString() : '-'}</td>
-                                        <td>{p.method}</td>
+                                        <td>{p.paymentDate ? new Date(p.paymentDate).toLocaleDateString() : 'Unpaid'}</td>
+                                        <td><strong>{p.method}</strong></td>
                                         <td>
                                             <span className={`badge ${p.status === 'Paid' ? 'badge-resolved' : 'badge-vacant'}`}>
                                                 {p.status}
